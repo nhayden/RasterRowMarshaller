@@ -169,26 +169,26 @@ void example() {
     cout << equal(rowdata, rowdata+sizeof(rowdata), ans) << endl;
 }
 
-int main(int argc, char** argv) {
-    cout << std::boolalpha;
-    
-//    BYTE rowdata[] = { 0x0, 0x0, 0x0, 0x0 };
-//    BYTE gdata[] = { (BYTE)~0, (BYTE)~0 };
-//    printarray(rowdata, sizeof(rowdata));
-//    printarray(gdata, sizeof(gdata));
-//    const int xpos = 11;
-//    int startByteIdx = xpos / 8;
-//    memcpy(&rowdata[startByteIdx], gdata, sizeof(gdata));
-//    printarray(rowdata, sizeof(rowdata));
-//    shiftarrayrange(&rowdata[startByteIdx], sizeof(gdata), xpos % 8);
-//    printarray(rowdata, sizeof(rowdata));
-    
-//    BYTE *all = new BYTE[75];
-    example();
-    
-    
-
-    
-    return 0;
-}
+//int main(int argc, char** argv) {
+////    cout << std::boolalpha;
+//    
+////    BYTE rowdata[] = { 0x0, 0x0, 0x0, 0x0 };
+////    BYTE gdata[] = { (BYTE)~0, (BYTE)~0 };
+////    printarray(rowdata, sizeof(rowdata));
+////    printarray(gdata, sizeof(gdata));
+////    const int xpos = 11;
+////    int startByteIdx = xpos / 8;
+////    memcpy(&rowdata[startByteIdx], gdata, sizeof(gdata));
+////    printarray(rowdata, sizeof(rowdata));
+////    shiftarrayrange(&rowdata[startByteIdx], sizeof(gdata), xpos % 8);
+////    printarray(rowdata, sizeof(rowdata));
+//    
+////    BYTE *all = new BYTE[75];
+////    example();
+//    
+//    
+//
+//    
+////    return 0;
+//}
 
