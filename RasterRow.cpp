@@ -4,6 +4,53 @@
 
 using std::cout;
 using std::endl;
+using std::vector;
+
+const BYTE PAD_ = 0x80;
+
+BYTE RleCB(const int count) { return static_cast<BYTE>((256 - (count - 1))); };
+BYTE LitCB(const int count) { return static_cast<BYTE>(count-1); }
+
+void PadPackedBits(vector<BYTE> &packed) {
+    if (packed.size() % 4 != 0) {
+        int padBytes = 4 - (packed.size() % 4);
+        for ( ; padBytes > 0; --padBytes) packed.emplace_back(PAD_);
+    }
+}
+
+vector<BYTE> RasterRow::Compress() const {
+    enum class PackState {
+        Run,
+        Raw
+    };
+    
+    const ByteArray &d = rasterData_;
+    vector<BYTE> res;
+    if (d.size() == 0) return res;
+    if (d.size() == 1) return { 0x00, d[0], PAD_, PAD_ };
+    
+//    res.emplace_back(RCB(2));
+//    res.emplace_back(d[0]);
+//    res.emplace_back(PAD_);
+//    res.emplace_back(PAD_);
+    
+    PackState state = PackState::Raw;
+    BYTE prev_byte = d[0];
+    vector<BYTE> buf;
+    for (int i = 1; i < d.size(); ++i) {
+        if (d[i] == prev_byte) {
+            // encode and switch to Run
+            if (state == PackState::Raw) {
+                
+                state = PackState::Run;
+            } else {
+                
+            }
+        }
+    }
+    
+    return res;
+}
 
 bool RasterRow::WriteIntoRasterAtPosition(const ByteArray& src, const int xpos) {
     if (xpos < 0) return false;

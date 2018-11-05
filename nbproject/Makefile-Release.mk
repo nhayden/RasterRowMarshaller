@@ -45,13 +45,16 @@ TESTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}/tests
 # Test Files
 TESTFILES= \
 	${TESTDIR}/TestFiles/f1 \
+	${TESTDIR}/TestFiles/f3 \
 	${TESTDIR}/TestFiles/f2
 
 # Test Object Files
 TESTOBJECTFILES= \
 	${TESTDIR}/tests/ArrayWrapperTest.o \
+	${TESTDIR}/tests/CompressTest.o \
 	${TESTDIR}/tests/RasterRowTest.o \
 	${TESTDIR}/tests/array_wrapper_test_runner.o \
+	${TESTDIR}/tests/compression_test_runner.o \
 	${TESTDIR}/tests/raster_row_test_runner.o
 
 # C Compiler Flags
@@ -104,6 +107,10 @@ ${TESTDIR}/TestFiles/f1: ${TESTDIR}/tests/ArrayWrapperTest.o ${TESTDIR}/tests/ar
 	${MKDIR} -p ${TESTDIR}/TestFiles
 	${LINK.cc} -o ${TESTDIR}/TestFiles/f1 $^ ${LDLIBSOPTIONS}   `cppunit-config --libs`   
 
+${TESTDIR}/TestFiles/f3: ${TESTDIR}/tests/CompressTest.o ${TESTDIR}/tests/compression_test_runner.o ${OBJECTFILES:%.o=%_nomain.o}
+	${MKDIR} -p ${TESTDIR}/TestFiles
+	${LINK.cc} -o ${TESTDIR}/TestFiles/f3 $^ ${LDLIBSOPTIONS}   `cppunit-config --libs`   
+
 ${TESTDIR}/TestFiles/f2: ${TESTDIR}/tests/RasterRowTest.o ${TESTDIR}/tests/raster_row_test_runner.o ${OBJECTFILES:%.o=%_nomain.o}
 	${MKDIR} -p ${TESTDIR}/TestFiles
 	${LINK.cc} -o ${TESTDIR}/TestFiles/f2 $^ ${LDLIBSOPTIONS}   `cppunit-config --libs`   
@@ -119,6 +126,18 @@ ${TESTDIR}/tests/array_wrapper_test_runner.o: tests/array_wrapper_test_runner.cp
 	${MKDIR} -p ${TESTDIR}/tests
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -std=c++11 `cppunit-config --cflags` -MMD -MP -MF "$@.d" -o ${TESTDIR}/tests/array_wrapper_test_runner.o tests/array_wrapper_test_runner.cpp
+
+
+${TESTDIR}/tests/CompressTest.o: tests/CompressTest.cpp 
+	${MKDIR} -p ${TESTDIR}/tests
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -std=c++11 `cppunit-config --cflags` -MMD -MP -MF "$@.d" -o ${TESTDIR}/tests/CompressTest.o tests/CompressTest.cpp
+
+
+${TESTDIR}/tests/compression_test_runner.o: tests/compression_test_runner.cpp 
+	${MKDIR} -p ${TESTDIR}/tests
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -std=c++11 `cppunit-config --cflags` -MMD -MP -MF "$@.d" -o ${TESTDIR}/tests/compression_test_runner.o tests/compression_test_runner.cpp
 
 
 ${TESTDIR}/tests/RasterRowTest.o: tests/RasterRowTest.cpp 
@@ -177,6 +196,7 @@ ${OBJECTDIR}/main_nomain.o: ${OBJECTDIR}/main.o main.cpp
 	@if [ "${TEST}" = "" ]; \
 	then  \
 	    ${TESTDIR}/TestFiles/f1 || true; \
+	    ${TESTDIR}/TestFiles/f3 || true; \
 	    ${TESTDIR}/TestFiles/f2 || true; \
 	else  \
 	    ./${TEST} || true; \

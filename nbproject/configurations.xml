@@ -30,6 +30,14 @@
         <itemPath>tests/ArrayWrapperTest.h</itemPath>
         <itemPath>tests/array_wrapper_test_runner.cpp</itemPath>
       </logicalFolder>
+      <logicalFolder name="f3"
+                     displayName="compression test"
+                     projectFiles="true"
+                     kind="TEST">
+        <itemPath>tests/CompressTest.cpp</itemPath>
+        <itemPath>tests/CompressTest.h</itemPath>
+        <itemPath>tests/compression_test_runner.cpp</itemPath>
+      </logicalFolder>
       <logicalFolder name="f2"
                      displayName="raster row test"
                      projectFiles="true"
@@ -57,6 +65,7 @@
       <compileType>
         <ccTool>
           <standard>11</standard>
+          <commandlineTool>clang++</commandlineTool>
           <warningLevel>2</warningLevel>
         </ccTool>
       </compileType>
@@ -96,11 +105,29 @@
           </linkerLibItems>
         </linkerTool>
       </folder>
+      <folder path="TestFiles/f3">
+        <cTool>
+          <commandLine>`cppunit-config --cflags`</commandLine>
+        </cTool>
+        <ccTool>
+          <commandLine>`cppunit-config --cflags`</commandLine>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f3</output>
+          <linkerLibItems>
+            <linkerOptionItem>`cppunit-config --libs`</linkerOptionItem>
+          </linkerLibItems>
+        </linkerTool>
+      </folder>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="tests/ArrayWrapperTest.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="tests/ArrayWrapperTest.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tests/CompressTest.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="tests/CompressTest.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="tests/RasterRowTest.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -110,6 +137,8 @@
             ex="false"
             tool="1"
             flavor2="0">
+      </item>
+      <item path="tests/compression_test_runner.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="tests/raster_row_test_runner.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -171,11 +200,29 @@
           </linkerLibItems>
         </linkerTool>
       </folder>
+      <folder path="TestFiles/f3">
+        <cTool>
+          <commandLine>`cppunit-config --cflags`</commandLine>
+        </cTool>
+        <ccTool>
+          <commandLine>`cppunit-config --cflags`</commandLine>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f3</output>
+          <linkerLibItems>
+            <linkerOptionItem>`cppunit-config --libs`</linkerOptionItem>
+          </linkerLibItems>
+        </linkerTool>
+      </folder>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="tests/ArrayWrapperTest.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="tests/ArrayWrapperTest.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tests/CompressTest.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="tests/CompressTest.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="tests/RasterRowTest.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -185,6 +232,8 @@
             ex="false"
             tool="1"
             flavor2="0">
+      </item>
+      <item path="tests/compression_test_runner.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="tests/raster_row_test_runner.cpp" ex="false" tool="1" flavor2="0">
       </item>
