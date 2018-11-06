@@ -6,16 +6,25 @@ using std::cout;
 using std::endl;
 using std::vector;
 
-const BYTE PAD_ = 0x80;
-
-BYTE RleCB(const int count) { return static_cast<BYTE>((256 - (count - 1))); };
-BYTE LitCB(const int count) { return static_cast<BYTE>(count-1); }
+BYTE RunLengthCB(const int count) { return static_cast<BYTE>((256 - (count - 1))); };
+BYTE RawCB(const int count) { return static_cast<BYTE>(count-1); }
 
 void PadPackedBits(vector<BYTE> &packed) {
     if (packed.size() % 4 != 0) {
         int padBytes = 4 - (packed.size() % 4);
-        for ( ; padBytes > 0; --padBytes) packed.emplace_back(PAD_);
+        for ( ; padBytes > 0; --padBytes) packed.push_back(PAD_);
     }
+}
+
+void RasterRow::EncodeRaw(vector<BYTE> &dest, const vector<BYTE> &buf) const {
+    if (buf.size() == 0) return;
+    dest.emplace_back(RawCB(buf.size()));
+    dest.insert(dest.end(), buf.begin(), buf.end());
+}
+
+void RasterRow::EncodeRunLength(vector<BYTE> &dest, const BYTE val, const int count) const {
+    dest.emplace_back(RunLengthCB(count));
+    dest.emplace_back(val);
 }
 
 vector<BYTE> RasterRow::Compress() const {
@@ -29,25 +38,56 @@ vector<BYTE> RasterRow::Compress() const {
     if (d.size() == 0) return res;
     if (d.size() == 1) return { 0x00, d[0], PAD_, PAD_ };
     
-//    res.emplace_back(RCB(2));
-//    res.emplace_back(d[0]);
-//    res.emplace_back(PAD_);
-//    res.emplace_back(PAD_);
-    
     PackState state = PackState::Raw;
+    int run_count = 1;
     BYTE prev_byte = d[0];
-    vector<BYTE> buf;
+    vector<BYTE> rawBuf;
     for (int i = 1; i < d.size(); ++i) {
         if (d[i] == prev_byte) {
-            // encode and switch to Run
-            if (state == PackState::Raw) {
-                
+            // continuing Run
+            if (state == PackState::Run) {
+                if (run_count == MAX_RUN_LENGTH) {
+                    EncodeRunLength(res, prev_byte, run_count);
+                    run_count = 0;
+                }
+                ++run_count;
+            }
+            // encode current Raw buf, and switch to Run
+            else {
+                EncodeRaw(res, rawBuf);
+                rawBuf.clear();
+                run_count = 1;
                 state = PackState::Run;
-            } else {
-                
             }
         }
+        // not match previous byte
+        else {
+            // end of Run
+            if (state == PackState::Run) {
+                ++run_count;
+                EncodeRunLength(res, prev_byte, run_count);
+                run_count = 0;
+                state = PackState::Raw;
+            }
+            // another Raw byte to add
+            else {
+                if (rawBuf.size() == MAX_RUN_LENGTH) {
+                    EncodeRaw(res, rawBuf);
+                    rawBuf.clear();
+                }
+                rawBuf.push_back(prev_byte);
+            }
+        }
+        prev_byte = d[i];
     }
+    if (state == PackState::Run) {
+        EncodeRunLength(res, prev_byte, ++run_count);
+    } else {
+        rawBuf.push_back(prev_byte);
+        EncodeRaw(res, rawBuf);
+        rawBuf.clear();
+    }
+    PadPackedBits(res);
     
     return res;
 }

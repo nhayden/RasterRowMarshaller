@@ -1,17 +1,24 @@
 #include <cstdlib>
 #include <iostream>
+#include <algorithm>
+#include <iterator>
 #include "RasterRow.h"
 #include "array_wrapper.h"
 
 using namespace std;
 
+void ppb(const vector<BYTE> v) {
+    for (BYTE b : v) cout << std::hex << (unsigned int)(BYTE)b << endl;
+}
+
 int main(int argc, char** argv) {
 
-    BYTE a_[]{0xff, 0xff, 0x00};
-    ByteArray a(a_, 3);
-    RightShiftArrayRange(&a, 0, 3, 1);
-    RasterRow rr(a);
-    rr.print();
+//    BYTE input_[]{ 0xaa, 0xaa };
+    BYTE input_[129];
+    std::fill(begin(input_), end(input_), 0xaa);
+    RasterRow rasterRow(ByteArray(input_, 129));
+    vector<BYTE> result = rasterRow.Compress();
+    ppb(result);
     return 0;
 }
 

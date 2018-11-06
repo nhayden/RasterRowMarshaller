@@ -5,8 +5,11 @@
 #include <iostream>
 #include <vector>
 
+const BYTE PAD_ = 0x80;
+
 class RasterRow {
 public:
+    const int MAX_RUN_LENGTH = 128;
     enum class Compression {
         PackBits,
         None
@@ -29,12 +32,15 @@ private:
     ByteArray rasterData_;
     const Compression compression_;
     
+    void EncodeRaw(std::vector<BYTE> &dest, const std::vector<BYTE> &buf) const;
+    void EncodeRunLength(std::vector<BYTE> &dest, const BYTE val,
+        const int count) const;
 };
 
 // Run-length/Repeat encoding control byte
-BYTE RleCB(const int count);
+BYTE RunLengthCB(const int count);
 // Literal run control byte
-BYTE LitCB(const int count);
+BYTE RawCB(const int count);
 
 void PadPackedBits(std::vector<BYTE> &packed);
 bool WriteAtByteOffset(ByteArray *dest, const ByteArray *src, unsigned int byteOffset);
