@@ -114,7 +114,7 @@ void CompressTest::testCompress_twelve_mixed() {
     CPPUNIT_ASSERT(std::equal(ans.begin(), ans.end(), result.begin()));
 }
 
-// test correct split behavior for max count length == 128
+// correct split behavior for max count length == 128
 void CompressTest::testCompress_128_match() {
     BYTE input_[128];
     std::fill(begin(input_), end(input_), 0xaa);
@@ -125,15 +125,50 @@ void CompressTest::testCompress_128_match() {
     CPPUNIT_ASSERT(std::equal(ans.begin(), ans.end(), result.begin()));
 }
 
-// test correct split behavior for length > 128
+// correct split behavior for length > 128
 void CompressTest::testCompress_129_match() {
     BYTE input_[129];
     std::fill(begin(input_), end(input_), 0xaa);
     RasterRow rasterRow(ByteArray(input_, 129));
     vector<BYTE> result = rasterRow.Compress();
     vector<BYTE> ans{ 0x81, 0xaa, 0x00, 0xaa };
-    ppb(ans);
-    ppb(result);
+    CPPUNIT_ASSERT(result.size() == ans.size());
+    CPPUNIT_ASSERT(std::equal(ans.begin(), ans.end(), result.begin()));
+}
+// correct split behavior for max len (128), followed by 2 match
+void CompressTest::testCompress_128_match_2_match() {
+    BYTE input_[130];
+    std::fill(begin(input_), end(input_), 0xaa);
+    RasterRow rasterRow(ByteArray(input_, 130));
+    vector<BYTE> result = rasterRow.Compress();
+    vector<BYTE> ans{ 0x81, 0xaa, 0xff, 0xaa };
+    CPPUNIT_ASSERT(result.size() == ans.size());
+    CPPUNIT_ASSERT(std::equal(ans.begin(), ans.end(), result.begin()));
+}
+// correct split behavior for max len (128), followed by 2 homgen. mismatches
+void CompressTest::testCompress_128_match_2_mismatch_bbbb() {
+    BYTE input_[130];
+    std::fill(begin(input_), end(input_), 0xaa);
+    input_[128] = 0xbb;
+    input_[129] = 0xbb;
+    RasterRow rasterRow(ByteArray(input_, 130));
+    vector<BYTE> result = rasterRow.Compress();
+    vector<BYTE> ans{ 0x81, 0xaa,
+                      0xff, 0xbb };
+    CPPUNIT_ASSERT(result.size() == ans.size());
+    CPPUNIT_ASSERT(std::equal(ans.begin(), ans.end(), result.begin()));
+}
+// correct split behavior for max len (128), followed by 2 heterog. mismatches
+void CompressTest::testCompress_128_match_2_mismatch_bbcc() {
+    BYTE input_[130];
+    std::fill(begin(input_), end(input_), 0xaa);
+    input_[128] = 0xbb;
+    input_[129] = 0xcc;
+    RasterRow rasterRow(ByteArray(input_, 130));
+    vector<BYTE> result = rasterRow.Compress();
+    vector<BYTE> ans{ 0x81, 0xaa,
+                      0x01, 0xbb, 0xcc,
+                      PAD_, PAD_, PAD_ };
     CPPUNIT_ASSERT(result.size() == ans.size());
     CPPUNIT_ASSERT(std::equal(ans.begin(), ans.end(), result.begin()));
 }

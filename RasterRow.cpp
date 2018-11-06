@@ -46,11 +46,11 @@ vector<BYTE> RasterRow::Compress() const {
         if (d[i] == prev_byte) {
             // continuing Run
             if (state == PackState::Run) {
+                ++run_count;
                 if (run_count == MAX_RUN_LENGTH) {
                     EncodeRunLength(res, prev_byte, run_count);
                     run_count = 0;
                 }
-                ++run_count;
             }
             // encode current Raw buf, and switch to Run
             else {

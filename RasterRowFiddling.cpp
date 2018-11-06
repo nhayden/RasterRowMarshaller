@@ -7,9 +7,9 @@
 
 using namespace std;
 
-void ppb(const vector<BYTE> v) {
-    for (BYTE b : v) cout << std::hex << (unsigned int)(BYTE)b << endl;
-}
+//void ppb(const vector<BYTE> v) {
+//    for (BYTE b : v) cout << std::hex << (unsigned int)(BYTE)b << endl;
+//}
 
 int main(int argc, char** argv) {
 
@@ -18,7 +18,7 @@ int main(int argc, char** argv) {
     std::fill(begin(input_), end(input_), 0xaa);
     RasterRow rasterRow(ByteArray(input_, 129));
     vector<BYTE> result = rasterRow.Compress();
-    ppb(result);
+//    ppb(result);
     return 0;
 }
 

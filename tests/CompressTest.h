@@ -14,8 +14,16 @@ class CompressTest : public CPPUNIT_NS::TestFixture {
     CPPUNIT_TEST(testCompress_five_match);
     CPPUNIT_TEST(testCompress_five_mismatch);
     CPPUNIT_TEST(testCompress_twelve_mixed);
+    // TODO: small alternating seqs of match/mismatch
+    
+    // testing 128 match boundary
     CPPUNIT_TEST(testCompress_128_match);
     CPPUNIT_TEST(testCompress_129_match);
+    CPPUNIT_TEST(testCompress_128_match_2_match);
+    CPPUNIT_TEST(testCompress_128_match_2_mismatch_bbbb);
+    CPPUNIT_TEST(testCompress_128_match_2_mismatch_bbcc);
+    
+    // TODO: 128 mismatch boundary
 
     CPPUNIT_TEST_SUITE_END();
 
@@ -35,6 +43,9 @@ private:
     void testCompress_twelve_mixed();
     void testCompress_128_match();
     void testCompress_129_match();
+    void testCompress_128_match_2_match();
+    void testCompress_128_match_2_mismatch_bbbb();
+    void testCompress_128_match_2_mismatch_bbcc();
 
 };
 
