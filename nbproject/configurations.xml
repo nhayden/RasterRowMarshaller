@@ -6,6 +6,7 @@
                    projectFiles="true">
       <itemPath>RasterRow.h</itemPath>
       <itemPath>array_wrapper.h</itemPath>
+      <itemPath>mock_field_image_data.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
@@ -121,6 +122,8 @@
       </folder>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>
+      <item path="mock_field_image_data.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="tests/ArrayWrapperTest.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="tests/ArrayWrapperTest.h" ex="false" tool="3" flavor2="0">
@@ -215,6 +218,8 @@
         </linkerTool>
       </folder>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="mock_field_image_data.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="tests/ArrayWrapperTest.cpp" ex="false" tool="1" flavor2="0">
       </item>

@@ -5,6 +5,8 @@
 #include "RasterRow.h"
 #include "array_wrapper.h"
 
+#include "mock_field_image_data.h"
+
 using namespace std;
 
 //void ppb(const vector<BYTE> v) {
@@ -12,13 +14,13 @@ using namespace std;
 //}
 
 int main(int argc, char** argv) {
-
-//    BYTE input_[]{ 0xaa, 0xaa };
-    BYTE input_[129];
-    std::fill(begin(input_), end(input_), 0xaa);
-    RasterRow rasterRow(ByteArray(input_, 129));
-    vector<BYTE> result = rasterRow.Compress();
-//    ppb(result);
+    
+    vector<vector<BYTE>> vv = get_mock_field_image_data();
+    cout << "hiiiiiiii\n";
+//    bool all17 = std::all_of(vv.begin(), vv.end(), [](const auto &it){ return it.size() == 17; });
+    
+    print2dvec(vv);
+    
     return 0;
 }
 
