@@ -9,7 +9,8 @@ const BYTE PAD_ = 0x80;
 
 class RasterRow {
 public:
-    const int MAX_RUN_LENGTH = 128;
+    static const int MAX_RUN_LENGTH = 128;
+    static const BYTE MAX_RUN_LENGTH_CONTROL_BYTE = 0x81;
     enum class Compression {
         PackBits,
         None
