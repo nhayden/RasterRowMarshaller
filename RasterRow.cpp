@@ -36,7 +36,7 @@ vector<BYTE> RasterRow::Compress() const {
     const ByteArray &d = rasterData_;
     vector<BYTE> res;
     if (d.size() == 0) return res;
-    if (d.size() == 1) return { 0x00, d[0], PAD_, PAD_ };
+    if (d.size() == 1) return { 0x00, d[0] };
     
     PackState state = PackState::Raw;
     int run_count = 1;
@@ -87,7 +87,6 @@ vector<BYTE> RasterRow::Compress() const {
         EncodeRaw(res, rawBuf);
         rawBuf.clear();
     }
-    PadPackedBits(res);
     
     return res;
 }

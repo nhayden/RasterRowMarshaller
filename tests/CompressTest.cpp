@@ -64,7 +64,7 @@ void CompressTest::testCompress_one() {
     BYTE input_[]{0xaa};
     RasterRow rasterRow(ByteArray(input_, ASIZE(input_)));
     vector<BYTE> result = rasterRow.Compress();
-    vector<BYTE> ans{ 0x00, 0xaa, PAD_, PAD_ };
+    vector<BYTE> ans{ 0x00, 0xaa };
     CPPUNIT_ASSERT(result.size() == ans.size());
     CPPUNIT_ASSERT(std::equal(ans.begin(), ans.end(), result.begin()));
 }
@@ -73,7 +73,7 @@ void CompressTest::testCompress_two_match() {
     BYTE input_[]{ 0xaa, 0xaa };
     RasterRow rasterRow(ByteArray(input_, ASIZE(input_)));
     vector<BYTE> result = rasterRow.Compress();
-    vector<BYTE> ans{ RunLengthCB(2), 0xaa, PAD_, PAD_ };
+    vector<BYTE> ans{ RunLengthCB(2), 0xaa };
     CPPUNIT_ASSERT(result.size() == ans.size());
     CPPUNIT_ASSERT(std::equal(ans.begin(), ans.end(), result.begin()));
 }
@@ -82,7 +82,7 @@ void CompressTest::testCompress_two_mismatch() {
     BYTE input_[]{ 0xaa, 0xbb };
     RasterRow rasterRow(ByteArray(input_, ASIZE(input_)));
     vector<BYTE> result = rasterRow.Compress();
-    vector<BYTE> ans{ RawCB(2), 0xaa, 0xbb, PAD_ };
+    vector<BYTE> ans{ RawCB(2), 0xaa, 0xbb };
     CPPUNIT_ASSERT(result.size() == ans.size());
     CPPUNIT_ASSERT(std::equal(ans.begin(), ans.end(), result.begin()));
 }
@@ -92,7 +92,7 @@ void CompressTest::testCompress_five_match() {
     BYTE input_[]{ 0x00, 0x00, 0x00, 0x00, 0x00 };
     RasterRow rasterRow(ByteArray(input_, ASIZE(input_)));
     vector<BYTE> result = rasterRow.Compress();
-    vector<BYTE> ans{ 0xfc, 0x00, PAD_, PAD_ };
+    vector<BYTE> ans{ 0xfc, 0x00 };
     CPPUNIT_ASSERT(result.size() == ans.size());
     CPPUNIT_ASSERT(std::equal(ans.begin(), ans.end(), result.begin()));
 }
@@ -102,7 +102,7 @@ void CompressTest::testCompress_five_mismatch() {
     BYTE input_[]{ 0x01, 0x02, 0x03, 0x04, 0x05 };
     RasterRow rasterRow(ByteArray(input_, ASIZE(input_)));
     vector<BYTE> result = rasterRow.Compress();
-    vector<BYTE> ans{ 0x04, 0x01, 0x02, 0x03, 0x04, 0x05, PAD_, PAD_ };
+    vector<BYTE> ans{ 0x04, 0x01, 0x02, 0x03, 0x04, 0x05 };
     CPPUNIT_ASSERT(result.size() == ans.size());
     CPPUNIT_ASSERT(std::equal(ans.begin(), ans.end(), result.begin()));
 }
@@ -116,8 +116,7 @@ void CompressTest::testCompress_twelve_mixed() {
     vector<BYTE> result = rasterRow.Compress();
     vector<BYTE> ans{ 0xfd, 0x00,
                       0x04, 0x03, 0x04, 0x05, 0x06, 0x07,
-                      0xfe, 0x08,
-                      PAD_, PAD_ };
+                      0xfe, 0x08 };
     CPPUNIT_ASSERT(result.size() == ans.size());
     CPPUNIT_ASSERT(std::equal(ans.begin(), ans.end(), result.begin()));
 }
@@ -130,8 +129,7 @@ void CompressTest::testCompress_alternating_matches() {
     vector<BYTE> result = rasterRow.Compress();
     vector<BYTE> ans{ 0xff, 0xaa,
                       0xff, 0xbb,
-                      0xff, 0xcc,
-                      PAD_, PAD_ };
+                      0xff, 0xcc };
     CPPUNIT_ASSERT(result.size() == ans.size());
     CPPUNIT_ASSERT(std::equal(ans.begin(), ans.end(), result.begin()));
 }
@@ -144,8 +142,7 @@ void CompressTest::testCompress_3byte_run_surrounded_by_literals_of_length1() {
     vector<BYTE> result = rasterRow.Compress();
     vector<BYTE> ans{ 0x00, 0xaa,
                       0xfe, 0xcc,
-                      0x00, 0xdd,
-                      PAD_, PAD_ };
+                      0x00, 0xdd };
     CPPUNIT_ASSERT(result.size() == ans.size());
     CPPUNIT_ASSERT(std::equal(ans.begin(), ans.end(), result.begin()));
 }
@@ -170,13 +167,11 @@ void CompressTest::testCompress_2byte_run_surrounded_by_literals_of_length1() {
     RasterRow rasterRow(ByteArray(input_, ASIZE(input_)));
     vector<BYTE> result = rasterRow.Compress();
     vector<BYTE> ideal
-                    { 0x03, 0xaa, 0xcc, 0xcc, 0xdd,
-                      PAD_, PAD_, PAD_ };
+                    { 0x03, 0xaa, 0xcc, 0xcc, 0xdd };
     vector<BYTE> actual_ans 
                     { 0x00, 0xaa,
                       0xff, 0xcc,
-                      0x00, 0xdd,
-                      PAD_, PAD_ };
+                      0x00, 0xdd };
     bool matches_ideal_size = result.size() == ideal.size();
     bool matches_actual_answer_size = result.size() == actual_ans.size();
     CPPUNIT_ASSERT(matches_ideal_size || matches_actual_answer_size);
@@ -193,8 +188,7 @@ void CompressTest::testCompress_2byte_run_surrounded_by_literals_of_length2() {
     RasterRow rasterRow(ByteArray(input_, ASIZE(input_)));
     vector<BYTE> result = rasterRow.Compress();
     vector<BYTE> ideal
-                    { 0x05, 0xaa, 0xbb, 0xcc, 0xcc, 0xdd, 0xee,
-                      PAD_ };
+                    { 0x05, 0xaa, 0xbb, 0xcc, 0xcc, 0xdd, 0xee };
     vector<BYTE> actual_ans 
                     { 0x01, 0xaa, 0xbb,
                       0xff, 0xcc,
@@ -214,7 +208,7 @@ void CompressTest::testCompress_128_match() {
     std::fill(begin(input_), end(input_), 0xaa);
     RasterRow rasterRow(ByteArray(input_, ASIZE(input_)));
     vector<BYTE> result = rasterRow.Compress();
-    vector<BYTE> ans{ 0x81, 0xaa, 0x80, 0x80 };
+    vector<BYTE> ans{ 0x81, 0xaa };
     CPPUNIT_ASSERT(result.size() == ans.size());
     CPPUNIT_ASSERT(std::equal(ans.begin(), ans.end(), result.begin()));
 }
@@ -261,8 +255,7 @@ void CompressTest::testCompress_128_match_2_mismatch_bbcc() {
     RasterRow rasterRow(ByteArray(input_, ASIZE(input_)));
     vector<BYTE> result = rasterRow.Compress();
     vector<BYTE> ans{ 0x81, 0xaa,
-                      0x01, 0xbb, 0xcc,
-                      PAD_, PAD_, PAD_ };
+                      0x01, 0xbb, 0xcc };
     CPPUNIT_ASSERT(result.size() == ans.size());
     CPPUNIT_ASSERT(std::equal(ans.begin(), ans.end(), result.begin()));
 }
