@@ -33,17 +33,16 @@ vector<BYTE> RasterRow::Compress() const {
         Raw
     };
     
-    const ByteArray &d = rasterData_;
     vector<BYTE> res;
-    if (d.size() == 0) return res;
-    if (d.size() == 1) return { 0x00, d[0] };
+    if (rdata_.size() == 0) return res;
+    if (rdata_.size() == 1) return { 0x00, rdata_[0] };
     
     PackState state = PackState::Raw;
     int run_count = 1;
-    BYTE prev_byte = d[0];
+    BYTE prev_byte = rdata_[0];
     vector<BYTE> rawBuf;
-    for (int i = 1; i < d.size(); ++i) {
-        if (d[i] == prev_byte) {
+    for (int i = 1; i < rdata_.size(); ++i) {
+        if (rdata_[i] == prev_byte) {
             // continuing Run
             if (state == PackState::Run) {
                 ++run_count;
@@ -78,7 +77,7 @@ vector<BYTE> RasterRow::Compress() const {
                 rawBuf.push_back(prev_byte);
             }
         }
-        prev_byte = d[i];
+        prev_byte = rdata_[i];
     }
     if (state == PackState::Run) {
         EncodeRunLength(res, prev_byte, ++run_count);
@@ -97,37 +96,39 @@ bool RasterRow::WriteIntoRasterAtPosition(const ByteArray& src, const int xpos) 
     const int byteOffsetBits = byteOffset * 8;
     const int rshift = xpos % 8;
     const int srcSizeBits = src.size() * 8;
-    const int arraySizeBits = rasterData_.size() * 8;
+    const int arraySizeBits = rdata_.size() * 8;
     // adequate size for specified range
     if (srcSizeBits + byteOffsetBits + rshift > arraySizeBits) return false;
-    if (!WriteAtByteOffset(&rasterData_, &src, byteOffset)) return false;
-    return RightShiftArrayRange(&rasterData_, byteOffset, src.size()+1, rshift);
+    if (!WriteAtByteOffset(&rdata_, &src, byteOffset)) return false;
+    return RightShiftArrayRange(&rdata_, byteOffset, src.size()+1, rshift);
 }
 
 bool RasterRow::operator==(const RasterRow &other) const {
-    if (rasterData_.size() != other.rasterData_.size()) return false;
-    return std::equal(rasterData_.begin(), rasterData_.end(),
-            other.rasterData_.begin());
+    if (rdata_.size() != other.rdata_.size()) return false;
+    return std::equal(rdata_.begin(), rdata_.end(),
+            other.rdata_.begin());
 }
 
 
-bool WriteAtByteOffset(ByteArray *dest, const ByteArray *src, unsigned int byteOffset) {
+bool WriteAtByteOffset(vector<BYTE> *dest, const ByteArray *src, unsigned int byteOffset) {
+    if (dest == nullptr || src == nullptr) return false;
     if (byteOffset + src->size() > dest->size()) return false;
     std::copy(src->begin(), src->end(), &(*dest)[byteOffset]);
     return true;
 }
 
-bool RightShiftArrayRange(ByteArray *array, const int startByte, const int numBytes, int rshift) {
-    if (array == nullptr) return false;
-    if (startByte + numBytes > array->size()) return false;
+bool RightShiftArrayRange(vector<BYTE> *raster_data,
+        const int startByte, const int numBytes, int rshift) {
+    if (raster_data == nullptr) return false;
+    if (startByte + numBytes > raster_data->size()) return false;
     if (rshift < 0 || rshift > 7) return false;
     if (rshift == 0) return true; // OK: no-op
     // OK to perform shift
-    ByteArray arrayref = *array;
+    vector<BYTE> &data_ref = *raster_data;
     for (int i = startByte+numBytes-1; i >= 0; --i) {
-        BYTE prev_byte = i > 0 ? arrayref[i-1] : 0;
-        arrayref[i] >>= rshift;
-        arrayref[i] |= prev_byte << (8 - rshift);
+        BYTE prev_byte = i > 0 ? data_ref[i-1] : 0;
+        data_ref[i] >>= rshift;
+        data_ref[i] |= prev_byte << (8 - rshift);
     }
     return true;
 }

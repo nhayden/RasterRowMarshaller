@@ -1,8 +1,15 @@
 #ifndef RASTERROWTEST_H
 #define RASTERROWTEST_H
 
+#include <vector>
+#include <memory>
+
 #include <cppunit/extensions/HelperMacros.h>
 #include "../RasterRow.h"
+
+using std::unique_ptr;
+using std::make_unique;
+using std::vector;
 
 
 class RasterRowTest : public CPPUNIT_NS::TestFixture {
@@ -52,7 +59,7 @@ private:
     void testWriteIntoRasterAtPosition8();
     void testWriteIntoRasterAtPosition9_bad();
     void testWriteIntoRasterAtPosition_negative();
-    BYTE *five_, *two_, *three_;
+    BYTE five_[5], two_[2], three_[3];
 };
 
 #endif /* RASTERROWTEST_H */

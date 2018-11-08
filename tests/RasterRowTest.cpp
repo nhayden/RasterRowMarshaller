@@ -3,10 +3,13 @@
 #include <iterator>
 #include <iostream>
 #include <algorithm>
+#include <utility>
 using std::begin;
 using std::end;
 using std::cout;
 using std::endl;
+using std::vector;
+using std::move;
 
 CPPUNIT_TEST_SUITE_REGISTRATION(RasterRowTest);
 
@@ -17,29 +20,26 @@ RasterRowTest::~RasterRowTest() {
 }
 
 void RasterRowTest::setUp() {
-    five_ = new BYTE[5]{0, 0, 0, 0, 0};
-    two_ = new BYTE[2]{0xff, 0xff};
-    three_ = new BYTE[3]{ 0x00, 0x00, 0x00 };
+    std::fill(five_, five_+5, 0x00);
+    std::fill(two_, two_+2, 0xff);
+    std::fill(three_, three_+3, 0x00);
 }
 
 void RasterRowTest::tearDown() {
-    delete [] five_;
-    delete [] two_;
-    delete [] three_;
+
 }
 
 // bmWidthBytes: 75
 // gTransform.GetGraphicByteWidth: 46 (make all 255)
 // gTransform.GetX: 205
 void RasterRowTest::testWriteIntoRasterAtPosition_realdata() {
-    BYTE fullWidthArray[75]{0x00};
-    RasterRow bmRow(ByteArray(fullWidthArray, 75));
+    RasterRow bmRow(vector<BYTE>(75));
     BYTE graphicDataArray[46];
     std::fill(graphicDataArray, graphicDataArray+46, (BYTE)~0);
     ByteArray graphicByteArray(graphicDataArray, 46);
     const int xpos = 205;
     bmRow.WriteIntoRasterAtPosition(graphicByteArray, xpos);
-    BYTE ans_[75] {
+    vector<BYTE> ans_ {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0-9
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 10-19
         0, 0, 0, 0, 0, 0x07, 0xff, 0xff, 0xff, 0xff, // 20-29
@@ -48,53 +48,50 @@ void RasterRowTest::testWriteIntoRasterAtPosition_realdata() {
         0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, // 50-59
         0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, // 60-69
         0xff, 0xf8, 0, 0, 0 }; // 70-74
-    RasterRow ans(ByteArray(ans_, 75));
+    RasterRow ans(move(ans_));
     CPPUNIT_ASSERT(bmRow == ans);
 }
 
 void RasterRowTest::testWriteIntoRasterAtPosition0() {
-    RasterRow rr(ByteArray(three_, 3));
+    RasterRow rr(vector<BYTE>{0xff, 0xff, 0x00});
     ByteArray two(two_, 2);
     rr.WriteIntoRasterAtPosition(two, 0);
-    BYTE ans_[]{ 0xff, 0xff, 0x00 };
-    RasterRow ans(ByteArray(ans_, 3));
+    RasterRow ans(vector<BYTE>{ 0xff, 0xff, 0x00 });
     CPPUNIT_ASSERT(ans == rr);
 }
 
 void RasterRowTest::testWriteIntoRasterAtPosition3() {
-    RasterRow rr(ByteArray(three_, 3));
+    RasterRow rr(vector<BYTE>{0xff, 0xff, 0x00});
     ByteArray two(two_, 2);
     rr.WriteIntoRasterAtPosition(two, 3);
-    BYTE ans_[]{ 0b00011111, 0xff, 0b11100000 };
-    RasterRow ans(ByteArray(ans_, 3));
+    RasterRow ans(vector<BYTE>{ 0b00011111, 0xff, 0b11100000 });
     CPPUNIT_ASSERT(ans == rr);
 }
 
 void RasterRowTest::testWriteIntoRasterAtPosition8() {
-    RasterRow rr(ByteArray(three_, 3));
+    RasterRow rr(vector<BYTE>{0x00, 0x00, 0x00});
     ByteArray two(two_, 2);
     rr.WriteIntoRasterAtPosition(two, 8);
-    BYTE ans_[]{ 0x00, 0xff, 0xff };
-    RasterRow ans(ByteArray(ans_, 3));
+    RasterRow ans(vector<BYTE>{ 0x00, 0xff, 0xff });
     CPPUNIT_ASSERT(ans == rr);
 }
 
 void RasterRowTest::testWriteIntoRasterAtPosition9_bad() {
-    RasterRow rr(ByteArray(three_, 3));
+    RasterRow rr(vector<BYTE>{0xff, 0xff, 0x00});
     ByteArray two(two_, 2);
     bool success = rr.WriteIntoRasterAtPosition(two, 9);
     CPPUNIT_ASSERT(!success);
 }
 void RasterRowTest::testWriteIntoRasterAtPosition_negative() {
-    RasterRow rr(ByteArray(three_, 3));
+    RasterRow rr(vector<BYTE>{0xff, 0xff, 0x00});
     ByteArray two(two_, 2);
     bool success = rr.WriteIntoRasterAtPosition(two, -1);
     CPPUNIT_ASSERT(!success);
 }
 
 void RasterRowTest::testWriteAtByteOffset() {
-    ByteArray five(five_, 5);
     ByteArray two(two_, 2);
+    vector<BYTE> five{0x00, 0x00, 0x00, 0x00, 0x00};
     CPPUNIT_ASSERT(WriteAtByteOffset(&five, &two, 3));
     CPPUNIT_ASSERT(five[0] == 0x00);
     CPPUNIT_ASSERT(five[1] == 0x00);
@@ -107,8 +104,7 @@ void RasterRowTest::testWriteAtByteOffset() {
 }
 
 void RasterRowTest::testRightShiftArrayRange0() {
-    BYTE three_[]{ 0xff, 0xff, 0x00};
-    ByteArray three(three_, 3);
+    vector<BYTE> three{0xff, 0xff, 0x00};
     RightShiftArrayRange(&three, 0, 3, 0);
     CPPUNIT_ASSERT(three[0] == 0xff);
     CPPUNIT_ASSERT(three[1] == 0xff);
@@ -116,8 +112,7 @@ void RasterRowTest::testRightShiftArrayRange0() {
 }
 
 void RasterRowTest::testRightShiftArrayRange1() {
-    BYTE three_[]{ 0xff, 0xff, 0x00};
-    ByteArray three(three_, 3);
+    vector<BYTE> three{0xff, 0xff, 0x00};
     RightShiftArrayRange(&three, 0, 3, 1);
     CPPUNIT_ASSERT(three[0] == 0b01111111);
     CPPUNIT_ASSERT(three[1] == 0xff);
@@ -125,8 +120,7 @@ void RasterRowTest::testRightShiftArrayRange1() {
 }
 
 void RasterRowTest::testRightShiftArrayRange2() {
-    BYTE three_[]{ 0xff, 0xff, 0x00};
-    ByteArray three(three_, 3);
+    vector<BYTE> three{0xff, 0xff, 0x00};
     RightShiftArrayRange(&three, 0, 3, 2);
     CPPUNIT_ASSERT(three[0] == 0b00111111);
     CPPUNIT_ASSERT(three[1] == 0xff);
@@ -134,8 +128,7 @@ void RasterRowTest::testRightShiftArrayRange2() {
 }
 
 void RasterRowTest::testRightShiftArrayRange3() {
-    BYTE three_[]{ 0xff, 0xff, 0x00};
-    ByteArray three(three_, 3);
+    vector<BYTE> three{0xff, 0xff, 0x00};
     RightShiftArrayRange(&three, 0, 3, 3);
     CPPUNIT_ASSERT(three[0] == 0b00011111);
     CPPUNIT_ASSERT(three[1] == 0xff);
@@ -143,8 +136,7 @@ void RasterRowTest::testRightShiftArrayRange3() {
 }
 
 void RasterRowTest::testRightShiftArrayRange4() {
-    BYTE three_[]{ 0xff, 0xff, 0x00};
-    ByteArray three(three_, 3);
+    vector<BYTE> three{0xff, 0xff, 0x00};
     RightShiftArrayRange(&three, 0, 3, 4);
     CPPUNIT_ASSERT(three[0] == 0b00001111);
     CPPUNIT_ASSERT(three[1] == 0xff);
@@ -152,8 +144,7 @@ void RasterRowTest::testRightShiftArrayRange4() {
 }
 
 void RasterRowTest::testRightShiftArrayRange5() {
-    BYTE three_[]{ 0xff, 0xff, 0x00};
-    ByteArray three(three_, 3);
+    vector<BYTE> three{0xff, 0xff, 0x00};
     RightShiftArrayRange(&three, 0, 3, 5);
     CPPUNIT_ASSERT(three[0] == 0b00000111);
     CPPUNIT_ASSERT(three[1] == 0xff);
@@ -161,8 +152,7 @@ void RasterRowTest::testRightShiftArrayRange5() {
 }
 
 void RasterRowTest::testRightShiftArrayRange6() {
-    BYTE three_[]{ 0xff, 0xff, 0x00};
-    ByteArray three(three_, 3);
+    vector<BYTE> three{0xff, 0xff, 0x00};
     RightShiftArrayRange(&three, 0, 3, 6);
     CPPUNIT_ASSERT(three[0] == 0b00000011);
     CPPUNIT_ASSERT(three[1] == 0xff);
@@ -170,8 +160,7 @@ void RasterRowTest::testRightShiftArrayRange6() {
 }
 
 void RasterRowTest::testRightShiftArrayRange7() {
-    BYTE three_[]{ 0xff, 0xff, 0x00};
-    ByteArray three(three_, 3);
+    vector<BYTE> three{0xff, 0xff, 0x00};
     RightShiftArrayRange(&three, 0, 3, 7);
     CPPUNIT_ASSERT(three[0] == 0b00000001);
     CPPUNIT_ASSERT(three[1] == 0xff);
@@ -179,15 +168,13 @@ void RasterRowTest::testRightShiftArrayRange7() {
 }
 
 void RasterRowTest::testRightShiftArrayRange8_bad_rshift() {
-    BYTE three_[]{ 0xff, 0xff, 0x00 };
-    ByteArray three(three_, 3);
+    vector<BYTE> three{0xff, 0xff, 0x00};
     bool success = RightShiftArrayRange(&three, 0, 3, 8);
     CPPUNIT_ASSERT(!success);
 }
 
 void RasterRowTest::testRightShiftArrayRange_past_end() {
-    BYTE three_[]{ 0xff, 0xff, 0x00 };
-    ByteArray three(three_, 3);
+    vector<BYTE> three{0xff, 0xff, 0x00};
     bool success = RightShiftArrayRange(&three, 1, 3, 0);
     CPPUNIT_ASSERT(!success);
 }

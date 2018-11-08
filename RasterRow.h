@@ -4,6 +4,7 @@
 #include "array_wrapper.h"
 #include <iostream>
 #include <vector>
+#include <utility>
 
 const BYTE PAD_ = 0x80;
 
@@ -15,22 +16,23 @@ public:
         PackBits,
         None
     };
-    explicit RasterRow(ByteArray rasterData) : rasterData_(rasterData),
+    explicit RasterRow(std::vector<BYTE> rdata) : rdata_(std::move(rdata)),
         compression_(Compression::PackBits) { }
-    explicit RasterRow(ByteArray rasterData, Compression compression) :
-        rasterData_(rasterData), compression_(compression) { }
+    explicit RasterRow(std::vector<BYTE> rdata, Compression compression) :
+        rdata_(std::move(rdata)), compression_(compression) { }
     bool WriteIntoRasterAtPosition(const ByteArray& src, const int xpos);
     void print() const {
         using std::cout;
         using std::endl;
-        for (const auto &i : rasterData_) cout << (signed int)i << " ";
+        for (const auto &i : rdata_) cout << (signed int)i << " ";
         cout << endl;
     }
     bool operator==(const RasterRow&other) const;
     std::vector<BYTE> Compress() const;
 
 private:
-    ByteArray rasterData_;
+    // raster data
+    std::vector<BYTE> rdata_;
     const Compression compression_;
     
     void EncodeRaw(std::vector<BYTE> &dest, const std::vector<BYTE> &buf) const;
@@ -44,8 +46,9 @@ BYTE RunLengthCB(const int count);
 BYTE RawCB(const int count);
 
 void PadPackedBits(std::vector<BYTE> &packed);
-bool WriteAtByteOffset(ByteArray *dest, const ByteArray *src, unsigned int byteOffset);
-bool RightShiftArrayRange(ByteArray *array, const int startByte, const int numBytes, int rshift);
+bool WriteAtByteOffset(std::vector<BYTE> *dest, const ByteArray *src, unsigned int byteOffset);
+bool RightShiftArrayRange(std::vector<BYTE> *raster_data, const int startByte,
+        const int numBytes, int rshift);
 
 #endif /* RASTERROW_H */
 

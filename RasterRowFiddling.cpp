@@ -2,6 +2,8 @@
 #include <iostream>
 #include <algorithm>
 #include <iterator>
+#include <memory>
+#include <utility>
 #include "RasterRow.h"
 #include "array_wrapper.h"
 
@@ -59,20 +61,11 @@ int main(int argc, char** argv) {
 ////    bool all17 = std::all_of(vv.begin(), vv.end(), [](const auto &it){ return it.size() == 17; });
 //    print2dvec(vv);
     
-//    ThingOwner to({1, "seventy-five"});
     Thing t1(1, "t1");
     ThingOwner to1(move(t1));
     cout << endl;
     
     ThingOwner to2(Thing{33, "thirty-three"});
-    
-//    Thing t1(1, "seventy");
-//    t1.print();
-//    Thing t2(move(t1));
-//    t1.print();
-//    t2.print();
-    
-//    dothing({33, "eight-seven"});
     
     return 0;
 }
