@@ -6,6 +6,8 @@ using std::cout;
 using std::endl;
 using std::vector;
 
+const BYTE RasterRow::MAX_RUN_LENGTH_CONTROL_BYTE = 0x81;
+
 BYTE RunLengthCB(const int count) { return static_cast<BYTE>((256 - (count - 1))); };
 BYTE RawCB(const int count) { return static_cast<BYTE>(count-1); }
 
@@ -129,6 +131,25 @@ bool RightShiftArrayRange(vector<BYTE> *raster_data,
         BYTE prev_byte = i > 0 ? data_ref[i-1] : 0;
         data_ref[i] >>= rshift;
         data_ref[i] |= prev_byte << (8 - rshift);
+    }
+    return true;
+}
+
+bool AddNCompressedBlankRows(std::vector<BYTE> *dest, long docRasterWidthInBytes, long nrows) {
+    if (dest == nullptr) return false;
+    if (docRasterWidthInBytes <= 0 || nrows <= 0) return false;
+    const long totalBytes = docRasterWidthInBytes * nrows;
+    for (int i = 0; i < totalBytes / RasterRow::MAX_RUN_LENGTH; ++i) {
+        dest->push_back(RasterRow::MAX_RUN_LENGTH_CONTROL_BYTE);
+        dest->push_back(0x00);
+    }
+    const long remainderBytes = totalBytes % 8;
+    if (remainderBytes == 1) {
+        dest->push_back(RawCB(1));
+        dest->push_back(0x00);
+    } else if (remainderBytes != 0) {
+        dest->push_back(RunLengthCB(static_cast<int>(remainderBytes)));
+        dest->push_back(0x00);
     }
     return true;
 }

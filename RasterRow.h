@@ -11,7 +11,7 @@ const BYTE PAD_ = 0x80;
 class RasterRow {
 public:
     static const int MAX_RUN_LENGTH = 128;
-    static const BYTE MAX_RUN_LENGTH_CONTROL_BYTE = 0x81;
+    static const BYTE MAX_RUN_LENGTH_CONTROL_BYTE;
     enum class Compression {
         PackBits,
         None
@@ -49,6 +49,7 @@ void PadPackedBits(std::vector<BYTE> &packed);
 bool WriteAtByteOffset(std::vector<BYTE> *dest, const ByteArray *src, unsigned int byteOffset);
 bool RightShiftArrayRange(std::vector<BYTE> *raster_data, const int startByte,
         const int numBytes, int rshift);
+bool AddNCompressedBlankRows(std::vector<BYTE> *dest, long docRasterWidthInBytes, long nrows);
 
 #endif /* RASTERROW_H */
 

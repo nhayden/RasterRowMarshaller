@@ -61,11 +61,16 @@ int main(int argc, char** argv) {
 ////    bool all17 = std::all_of(vv.begin(), vv.end(), [](const auto &it){ return it.size() == 17; });
 //    print2dvec(vv);
     
-    Thing t1(1, "t1");
-    ThingOwner to1(move(t1));
-    cout << endl;
+//    Thing t1(1, "t1");
+//    ThingOwner to1(move(t1));
+//    cout << endl;
+//    
+//    ThingOwner to2(Thing{33, "thirty-three"});
     
-    ThingOwner to2(Thing{33, "thirty-three"});
+    vector<BYTE> buf;
+    long docByteWidth = 71;
+    long nrows = 42;
+    AddNCompressedBlankRows(&buf, docByteWidth, nrows);
     
     return 0;
 }
