@@ -20,13 +20,13 @@ void PadPackedBits(vector<BYTE> &packed) {
 
 void RasterRow::EncodeRaw(vector<BYTE> &dest, const vector<BYTE> &buf) const {
     if (buf.size() == 0) return;
-    dest.emplace_back(RawCB(buf.size()));
+    dest.push_back(RawCB(buf.size()));
     dest.insert(dest.end(), buf.begin(), buf.end());
 }
 
 void RasterRow::EncodeRunLength(vector<BYTE> &dest, const BYTE val, const int count) const {
-    dest.emplace_back(RunLengthCB(count));
-    dest.emplace_back(val);
+    dest.push_back(RunLengthCB(count));
+    dest.push_back(val);
 }
 
 vector<BYTE> RasterRow::Compress() const {
@@ -111,6 +111,9 @@ bool RasterRow::operator==(const RasterRow &other) const {
             other.rdata_.begin());
 }
 
+void RasterRow::ZeroOutData() {
+    std::fill(rdata_.begin(), rdata_.end(), 0x00);
+}
 
 bool WriteAtByteOffset(vector<BYTE> *dest, const ByteArray *src, unsigned int byteOffset) {
     if (dest == nullptr || src == nullptr) return false;
@@ -143,7 +146,7 @@ bool AddNCompressedBlankRows(std::vector<BYTE> *dest, long docRasterWidthInBytes
         dest->push_back(RasterRow::MAX_RUN_LENGTH_CONTROL_BYTE);
         dest->push_back(0x00);
     }
-    const long remainderBytes = totalBytes % 8;
+    const long remainderBytes = totalBytes % RasterRow::MAX_RUN_LENGTH;
     if (remainderBytes == 1) {
         dest->push_back(RawCB(1));
         dest->push_back(0x00);

@@ -29,6 +29,7 @@ public:
     }
     bool operator==(const RasterRow&other) const;
     std::vector<BYTE> Compress() const;
+    void ZeroOutData();
 
 private:
     // raster data

@@ -216,14 +216,14 @@ void RasterRowTest::testAddNCompressedRows_130_bytes() {
 
 void RasterRowTest::testAddNCompressedRows_realworld() {
     vector<BYTE> buf;
-    long docByteWidth = 71;
+    long docByteWidth = 72;
     long nrows = 42;
     CPPUNIT_ASSERT(AddNCompressedBlankRows(&buf, docByteWidth, nrows));
     vector<BYTE> ans;
     vector<BYTE> byte_value_pair{0x81, 0x00};
     for (int i = 0; i < 23; ++i)
         ans.insert(ans.begin(), byte_value_pair.begin(), byte_value_pair.end());
-    ans.push_back(0xfb);
+    ans.push_back(0xb1);
     ans.push_back(0x00);
     CPPUNIT_ASSERT(buf == ans);
 }
