@@ -44,6 +44,7 @@ TESTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}/tests
 
 # Test Files
 TESTFILES= \
+	${TESTDIR}/TestFiles/f4 \
 	${TESTDIR}/TestFiles/f1 \
 	${TESTDIR}/TestFiles/f3 \
 	${TESTDIR}/TestFiles/f2
@@ -52,9 +53,11 @@ TESTFILES= \
 TESTOBJECTFILES= \
 	${TESTDIR}/tests/ArrayWrapperTest.o \
 	${TESTDIR}/tests/CompressTest.o \
+	${TESTDIR}/tests/IntegrationTest.o \
 	${TESTDIR}/tests/RasterRowTest.o \
 	${TESTDIR}/tests/array_wrapper_test_runner.o \
 	${TESTDIR}/tests/compression_test_runner.o \
+	${TESTDIR}/tests/integration_test_runner.o \
 	${TESTDIR}/tests/raster_row_test_runner.o
 
 # C Compiler Flags
@@ -103,6 +106,10 @@ ${OBJECTDIR}/main.o: main.cpp
 .build-tests-conf: .build-tests-subprojects .build-conf ${TESTFILES}
 .build-tests-subprojects:
 
+${TESTDIR}/TestFiles/f4: ${TESTDIR}/tests/IntegrationTest.o ${TESTDIR}/tests/integration_test_runner.o ${OBJECTFILES:%.o=%_nomain.o}
+	${MKDIR} -p ${TESTDIR}/TestFiles
+	${LINK.cc} -o ${TESTDIR}/TestFiles/f4 $^ ${LDLIBSOPTIONS}   `cppunit-config --libs`   
+
 ${TESTDIR}/TestFiles/f1: ${TESTDIR}/tests/ArrayWrapperTest.o ${TESTDIR}/tests/array_wrapper_test_runner.o ${OBJECTFILES:%.o=%_nomain.o}
 	${MKDIR} -p ${TESTDIR}/TestFiles
 	${LINK.cc} -o ${TESTDIR}/TestFiles/f1 $^ ${LDLIBSOPTIONS}   `cppunit-config --libs`   
@@ -114,6 +121,18 @@ ${TESTDIR}/TestFiles/f3: ${TESTDIR}/tests/CompressTest.o ${TESTDIR}/tests/compre
 ${TESTDIR}/TestFiles/f2: ${TESTDIR}/tests/RasterRowTest.o ${TESTDIR}/tests/raster_row_test_runner.o ${OBJECTFILES:%.o=%_nomain.o}
 	${MKDIR} -p ${TESTDIR}/TestFiles
 	${LINK.cc} -o ${TESTDIR}/TestFiles/f2 $^ ${LDLIBSOPTIONS}   `cppunit-config --libs`   
+
+
+${TESTDIR}/tests/IntegrationTest.o: tests/IntegrationTest.cpp 
+	${MKDIR} -p ${TESTDIR}/tests
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -std=c++11 `cppunit-config --cflags` -MMD -MP -MF "$@.d" -o ${TESTDIR}/tests/IntegrationTest.o tests/IntegrationTest.cpp
+
+
+${TESTDIR}/tests/integration_test_runner.o: tests/integration_test_runner.cpp 
+	${MKDIR} -p ${TESTDIR}/tests
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -std=c++11 `cppunit-config --cflags` -MMD -MP -MF "$@.d" -o ${TESTDIR}/tests/integration_test_runner.o tests/integration_test_runner.cpp
 
 
 ${TESTDIR}/tests/ArrayWrapperTest.o: tests/ArrayWrapperTest.cpp 
@@ -195,6 +214,7 @@ ${OBJECTDIR}/main_nomain.o: ${OBJECTDIR}/main.o main.cpp
 .test-conf:
 	@if [ "${TEST}" = "" ]; \
 	then  \
+	    ${TESTDIR}/TestFiles/f4 || true; \
 	    ${TESTDIR}/TestFiles/f1 || true; \
 	    ${TESTDIR}/TestFiles/f3 || true; \
 	    ${TESTDIR}/TestFiles/f2 || true; \

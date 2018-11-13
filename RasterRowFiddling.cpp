@@ -1,4 +1,5 @@
 #include <cstdlib>
+#include <cstring>
 #include <iostream>
 #include <algorithm>
 #include <iterator>
@@ -67,10 +68,30 @@ int main(int argc, char** argv) {
 //    
 //    ThingOwner to2(Thing{33, "thirty-three"});
     
-    vector<BYTE> buf;
-    long docByteWidth = 71;
-    long nrows = 42;
-    AddNCompressedBlankRows(&buf, docByteWidth, nrows);
+//    vector<BYTE> buf;
+//    long docByteWidth = 72;
+//    long nrows = 42;
+//    AddNCompressedBlankRows(&buf, docByteWidth, nrows);
+    
+    vector<vector<int>> vv{{1, 2, 3}, {4, 5, 6}};
+    int **arr2d;
+    arr2d = new int *[2];
+    for (int i = 0; i < 2; ++i) {
+        arr2d[i] = new int[3];
+        std::copy(vv[i].begin(), vv[i].end(), arr2d[i]);
+    }
+    
+    for (int i = 0; i < 2; ++i) {
+        for (int j = 0; j < 3; ++j) {
+            cout << arr2d[i][j] << " ";
+        }
+        cout << endl;
+    }
+    
+    for (int i = 0; i < 2; ++i) {
+        delete [] arr2d[i];
+    }
+    delete [] arr2d;
     
     return 0;
 }

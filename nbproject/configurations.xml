@@ -23,6 +23,14 @@
                    displayName="Test Files"
                    projectFiles="false"
                    kind="TEST_LOGICAL_FOLDER">
+      <logicalFolder name="f4"
+                     displayName="acceptance tests"
+                     projectFiles="true"
+                     kind="TEST">
+        <itemPath>tests/IntegrationTest.cpp</itemPath>
+        <itemPath>tests/IntegrationTest.h</itemPath>
+        <itemPath>tests/integration_test_runner.cpp</itemPath>
+      </logicalFolder>
       <logicalFolder name="f1"
                      displayName="array wrapper test"
                      projectFiles="true"
@@ -120,6 +128,20 @@
           </linkerLibItems>
         </linkerTool>
       </folder>
+      <folder path="TestFiles/f4">
+        <cTool>
+          <commandLine>`cppunit-config --cflags`</commandLine>
+        </cTool>
+        <ccTool>
+          <commandLine>`cppunit-config --cflags`</commandLine>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f4</output>
+          <linkerLibItems>
+            <linkerOptionItem>`cppunit-config --libs`</linkerOptionItem>
+          </linkerLibItems>
+        </linkerTool>
+      </folder>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="mock_field_image_data.h" ex="false" tool="3" flavor2="0">
@@ -132,6 +154,10 @@
       </item>
       <item path="tests/CompressTest.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="tests/IntegrationTest.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="tests/IntegrationTest.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="tests/RasterRowTest.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="tests/RasterRowTest.h" ex="false" tool="3" flavor2="0">
@@ -142,6 +168,8 @@
             flavor2="0">
       </item>
       <item path="tests/compression_test_runner.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="tests/integration_test_runner.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="tests/raster_row_test_runner.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -217,6 +245,20 @@
           </linkerLibItems>
         </linkerTool>
       </folder>
+      <folder path="TestFiles/f4">
+        <cTool>
+          <commandLine>`cppunit-config --cflags`</commandLine>
+        </cTool>
+        <ccTool>
+          <commandLine>`cppunit-config --cflags`</commandLine>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f4</output>
+          <linkerLibItems>
+            <linkerOptionItem>`cppunit-config --libs`</linkerOptionItem>
+          </linkerLibItems>
+        </linkerTool>
+      </folder>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="mock_field_image_data.h" ex="false" tool="3" flavor2="0">
@@ -229,6 +271,10 @@
       </item>
       <item path="tests/CompressTest.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="tests/IntegrationTest.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="tests/IntegrationTest.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="tests/RasterRowTest.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="tests/RasterRowTest.h" ex="false" tool="3" flavor2="0">
@@ -239,6 +285,8 @@
             flavor2="0">
       </item>
       <item path="tests/compression_test_runner.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="tests/integration_test_runner.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="tests/raster_row_test_runner.cpp" ex="false" tool="1" flavor2="0">
       </item>
