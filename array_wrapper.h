@@ -1,6 +1,5 @@
-#ifndef ARRAY_WRAPPER_H
-#define ARRAY_WRAPPER_H
-#include <iostream>
+#pragma once
+#include <algorithm>
 
 template <typename T>
 struct array_wrapper
@@ -27,12 +26,4 @@ struct array_wrapper
 
 typedef unsigned char BYTE;
 typedef array_wrapper<BYTE> ByteArray;
-
-template <typename T>
-void printwrapper(const array_wrapper<T> &aw) {
-  for (int i = 0; i < aw.size(); ++i)
-      std::cout << i << ": " << (signed int)aw[i] << std::endl;
-}
-
-#endif /* ARRAY_WRAPPER_H */
 

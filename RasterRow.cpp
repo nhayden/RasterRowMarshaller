@@ -1,9 +1,6 @@
 #include "RasterRow.h"
-#include <iostream>
 #include <algorithm>
 
-using std::cout;
-using std::endl;
 using std::vector;
 
 const BYTE RasterRow::MAX_RUN_LENGTH_CONTROL_BYTE = 0x81;
@@ -107,12 +104,7 @@ bool RasterRow::WriteIntoRasterAtPosition(const ByteArray& src, const int xpos) 
 
 bool RasterRow::operator==(const RasterRow &other) const {
     if (rdata_.size() != other.rdata_.size()) return false;
-    return std::equal(rdata_.begin(), rdata_.end(),
-            other.rdata_.begin());
-}
-
-void RasterRow::ZeroOutData() {
-    std::fill(rdata_.begin(), rdata_.end(), 0x00);
+    return std::equal(rdata_.begin(), rdata_.end(), other.rdata_.begin());
 }
 
 bool WriteAtByteOffset(vector<BYTE> *dest, const ByteArray *src, unsigned int byteOffset) {
