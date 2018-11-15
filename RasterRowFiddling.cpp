@@ -73,25 +73,33 @@ int main(int argc, char** argv) {
 //    long nrows = 42;
 //    AddNCompressedBlankRows(&buf, docByteWidth, nrows);
     
-    vector<vector<int>> vv{{1, 2, 3}, {4, 5, 6}};
-    int **arr2d;
-    arr2d = new int *[2];
-    for (int i = 0; i < 2; ++i) {
-        arr2d[i] = new int[3];
-        std::copy(vv[i].begin(), vv[i].end(), arr2d[i]);
-    }
-    
-    for (int i = 0; i < 2; ++i) {
-        for (int j = 0; j < 3; ++j) {
-            cout << arr2d[i][j] << " ";
+    for (int i = 0; i < 100; ++i) {
+        vector<int> v;
+        for (int i = 0; i < 100; ++i) {
+            vector<int> t(100000, 88);
+            v.insert(v.end(), t.begin(), t.end());
         }
-        cout << endl;
+        auto x = 0;
+        for (const auto &i : v) {
+            x += i;
+        }
+        cout << x << endl;
     }
     
-    for (int i = 0; i < 2; ++i) {
-        delete [] arr2d[i];
-    }
-    delete [] arr2d;
+//    for (int i = 0; i < 100; ++i) {
+//        vector<int> v;
+//        vector<int> t(100000);
+//        for (int i = 0; i < 100; ++i) {
+//            std::fill(t.begin(), t.end(), 88);
+//            v.insert(v.end(), t.begin(), t.end());
+//            std::fill(t.begin(), t.end(), 0);
+//        }
+//        auto x = 0;
+//        for (const auto &i : v) {
+//            x += i;
+//        }
+//        cout << x << endl;
+//    }
     
     return 0;
 }

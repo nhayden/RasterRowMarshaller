@@ -54,11 +54,11 @@ void IntegrationTest::tearDown() {
 void IntegrationTest::testRealWorld_GrahicData() {
     vector<BYTE> buf;
 
-    RasterRow scratchRaster( (vector<BYTE>(_documentRasterRowWidthInBytes)));
     for (int i = 0; i < _rows; ++i) {
+        RasterRow thisRaster((vector<BYTE>(_documentRasterRowWidthInBytes)));
         ByteArray graphicData(_ppData[i], _graphicByteWidth);
-        scratchRaster.WriteIntoRasterAtPosition(graphicData, _graphicXPos);
-        vector<BYTE> compressed = scratchRaster.Compress();
+        thisRaster.WriteIntoRasterAtPosition(graphicData, _graphicXPos);
+        vector<BYTE> compressed = thisRaster.Compress();
 //        cout << i << ": ";
 //        for (const BYTE &b : compressed) {
 //            cout << std::hex;
@@ -67,7 +67,6 @@ void IntegrationTest::testRealWorld_GrahicData() {
 //        }
 //        cout << endl;
         buf.insert(buf.end(), compressed.begin(), compressed.end());
-        scratchRaster.ZeroOutData();
     }
     PadPackedBits(buf);
     
