@@ -68,38 +68,14 @@ int main(int argc, char** argv) {
 //    
 //    ThingOwner to2(Thing{33, "thirty-three"});
     
-//    vector<BYTE> buf;
-//    long docByteWidth = 72;
-//    long nrows = 42;
-//    AddNCompressedBlankRows(&buf, docByteWidth, nrows);
-    
-    for (int i = 0; i < 100; ++i) {
-        vector<int> v;
-        for (int i = 0; i < 100; ++i) {
-            vector<int> t(100000, 88);
-            v.insert(v.end(), t.begin(), t.end());
-        }
-        auto x = 0;
-        for (const auto &i : v) {
-            x += i;
-        }
-        cout << x << endl;
-    }
-    
-//    for (int i = 0; i < 100; ++i) {
-//        vector<int> v;
-//        vector<int> t(100000);
-//        for (int i = 0; i < 100; ++i) {
-//            std::fill(t.begin(), t.end(), 88);
-//            v.insert(v.end(), t.begin(), t.end());
-//            std::fill(t.begin(), t.end(), 0);
-//        }
-//        auto x = 0;
-//        for (const auto &i : v) {
-//            x += i;
-//        }
-//        cout << x << endl;
+    RasterRow rr(vector<BYTE>{1, 2, 3});
+//    for (auto it = rr.begin(); it != rr.end(); ++it) {
+//        cout << (signed)*it << endl;
 //    }
+    
+    auto x = rr.data();
+    cout << (signed)*x << endl;
+    cout << rr.size() << endl;
     
     return 0;
 }

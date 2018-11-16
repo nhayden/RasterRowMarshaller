@@ -21,6 +21,15 @@ public:
     bool WriteIntoRasterAtPosition(const ByteArray& src, const int xpos);
     bool operator==(const RasterRow&other) const;
     std::vector<BYTE> Compress() const;
+    
+    // *CONST* helpers for accessing underlying storage
+    typedef std::vector<BYTE>::const_iterator const_iterator;
+    const_iterator begin() const { return rdata_.begin(); }
+    const_iterator end() const { return rdata_.end(); }
+    typedef std::vector<BYTE>::value_type value_type;
+    const value_type *data() const { return rdata_.data(); }
+    const std::size_t size() const { return rdata_.size(); }
+    
 
 private:
     // raster data
